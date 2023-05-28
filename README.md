@@ -1,2 +1,2 @@
 # Matrix-Calulator-
-Linear Matrix Calculator in C++
+Linear Matrix Calculator done in C++
