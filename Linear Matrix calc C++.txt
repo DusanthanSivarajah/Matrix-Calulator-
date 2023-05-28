@@ -1,0 +1,615 @@
+#include <iostream>
+#include <iomanip>
+#include <iostream>
+#include <conio.h>
+#include <math.h>
+using namespace std;
+
+
+class GaussElimination
+{
+    public:
+
+        void setMatA();
+        void setMatB();
+        void solve();
+        void setRowCol();
+        bool pivotZero(int row);
+        void normalize(int row);
+        void exchangeRow(int row);
+        void makeBelowPivotZero(int row);
+        void substitute();
+
+        void display();
+
+    protected:
+
+    private:
+        double a[5][5],x[5];
+        int rowA,colA;
+};
+
+void GaussElimination::setRowCol()
+{
+    cout << "Enter row of Matrix A: ";
+    cin >> rowA;
+    cout << "Enter column of Matrix A: ";
+    cin >> colA;
+}
+void GaussElimination::setMatA()
+{
+    cout << "For Matrix A : " << endl;
+    for(int i =  0; i < rowA; i++ )
+    {
+        for(int j = 0; j < colA; j++)
+        {
+
+            cout << "Enter element A[" << i+1 << "]" << "[" << j+1 << "] : " ;
+            cin >> a[i][j];
+        }
+    }
+}
+void GaussElimination::setMatB()
+{
+    cout << "For Matrix B: " << endl;
+    for(int i =  0; i < rowA; i++ )
+    {
+
+            cout << "Enter B[" << i+1 << "]" << "[" << 0 << "] : " ;
+            cin >> a[i][colA];
+    }
+}
+
+void GaussElimination::solve()
+{
+    for(int i = 0; i < rowA; i++)
+    {
+        if(!pivotZero(i)) 
+       // this is done because if the pivot in any row is zero which creates error
+        {
+            normalize(i);
+        }
+        else
+        {
+            exchangeRow(i);
+            normalize(i);
+        }
+        makeBelowPivotZero(i);
+    }
+    substitute();
+}
+
+
+void GaussElimination::substitute()
+{
+    x[rowA-1] = a[rowA-1][colA];
+
+
+    for(int i = rowA-2; i>=0 ;i--)
+    {
+        double s = 0;
+        for(int j = i+1; j < colA; j++)
+        {
+            s+= a[i][j] * x[j];
+        }
+        x[i] = a[i][colA] - s;
+    }
+    cout << endl << "The Required values are:\n";
+    for(int i = 0; i < rowA;i++)
+    cout << "X["<<i<<"]: "<< x[i] << endl;
+
+}
+bool GaussElimination::pivotZero(int row)
+{
+    if(a[row][row] == 0)
+    {
+        return true;
+    }
+    else
+        return false;
+}
+
+void GaussElimination::exchangeRow(int row)
+{
+  //  cout << "Exchanfged\n";
+    int k = row+1;
+    int great = row+1;
+    while (k<rowA)
+    {
+        if(a[great][row]<a[k][row])
+            great  = k;
+        k++;
+    }
+    cout << great << endl;
+
+    for (int j = 0; j < colA+1; j++)
+    {
+        double temp;
+        temp = a[row][j];
+        a[row][j] = a[great][j];
+        a[great][j] = temp;
+    }
+    display();
+}
+void GaussElimination::normalize(int row)
+{
+    //cout << "normalized \n";
+    double normal = a[row][row];
+    for(int j = 0; j < colA+1; j++)
+    {
+        a[row][j] /= normal;
+    }
+    display();
+}
+void GaussElimination::makeBelowPivotZero(int row)
+{
+   // cout << "made zero" << endl;
+    for(int i = row+1; i < rowA; i++)
+    {
+        double zeroFactor = a[i][row];
+   //     cout << "zero = " << zeroFactor<< endl;
+        for(int j = 0; j < colA+1; j++)
+        {
+            a[i][j] -= zeroFactor*a[row][j];
+        }
+        display();
+    }
+
+}
+
+void GaussElimination::display()
+{
+    cout << setprecision(4) << endl;
+    for(int i = 0; i < rowA; i++)
+    {
+        for (int j = 0; j < colA+1; j++)
+        {
+            cout << a[i][j] << " ";
+        }
+        cout << endl;
+    }
+
+ cout << endl << endl;
+}
+
+
+
+int determinant( int matrix[10][10], int n) {   
+   int det = 0;
+   int submatrix[10][10];
+   if (n == 2)
+      return ((matrix[0][0] * matrix[1][1]) - (matrix[1][0] * matrix[0][1]));
+   else {
+      for (int x = 0; x < n; x++) {
+            int subi = 0; 
+            for (int i = 1; i < n; i++) {
+               int subj = 0;
+               for (int j = 0; j < n; j++) {
+                  if (j == x)
+                  continue;
+                  submatrix[subi][subj] = matrix[i][j];
+                  subj++;
+               }
+               subi++;
+            }
+            det = det + (pow(-1, x) * matrix[0][x] * determinant( submatrix, n - 1 ));
+      }
+   }
+   return det;
+}
+
+void ADD()
+{
+    
+    int r, c, a[100][100], b[100][100], sum[100][100], i, j;
+    cout << "Enter number of size of the square matrix (between 1 and 100): ";
+    cin >> r;
+    cout << "Enter number of columns (between 1 and 100): ";
+    cin >> c;
+    cout << endl << "Enter elements of 1st matrix: " << endl;
+    // Storing elements of first matrix entered by user.
+    for(i = 0; i < r; ++i)
+       for(j = 0; j < c; ++j)
+       {
+           cout << "Enter element A[" << i + 1 <<"]["<< j + 1 << "]: ";
+           cin >> a[i][j];
+       }
+    // Storing elements of second matrix entered by user.
+    cout << endl << "Enter elements of 2nd matrix: " << endl;
+    for(i = 0; i < r; ++i)
+       for(j = 0; j < c; ++j)
+       {
+           cout << "Enter element B[" << i + 1<<"]["<< j + 1 << "]: ";
+           cin >> b[i][j];
+       }
+    // Adding Two matrices
+    for(i = 0; i < r; ++i)
+        for(j = 0; j < c; ++j)
+            sum[i][j] = a[i][j] + b[i][j];
+    // Displaying the resultant sum matrix.
+    cout << endl << "Sum of two matrix is: " << endl;
+    for(i = 0; i < r; ++i)
+        for(j = 0; j < c; ++j)
+        {
+            cout << sum[i][j] << "  ";
+            if(j == c - 1)
+                cout << endl;
+        }
+}
+void SUB()
+{
+    int r, c, a[100][100], b[100][100], sum[100][100], i, j;
+    cout << "Enter number of size of the square matrix (between 1 and 100): ";
+    cin >> r;
+    cout << "Enter number of columns (between 1 and 100): ";
+    cin >> c;
+    cout << endl << "Enter elements of 1st matrix: " << endl;
+    // Storing elements of first matrix entered by user.
+    for(i = 0; i < r; ++i)
+       for(j = 0; j < c; ++j)
+       {
+           cout << "Enter element A[" << i + 1 <<"]["<< j + 1 << "] : ";
+           cin >> a[i][j];
+       }
+    // Storing elements of second matrix entered by user.
+    cout << endl << "Enter elements of 2nd matrix: " << endl;
+    for(i = 0; i < r; ++i)
+       for(j = 0; j < c; ++j)
+       {
+           cout << "Enter element B[" << i + 1<<"][" << j + 1 << "] : ";
+           cin >> b[i][j];
+       }
+    // Subtracting Two matrices
+    for(i = 0; i < r; ++i)
+        for(j = 0; j < c; ++j)
+            sum[i][j] = a[i][j] - b[i][j];
+    // Displaying the resultant sum matrix.
+    cout << endl << "Sum of two matrix is: " << endl;
+    for(i = 0; i < r; ++i)
+        for(j = 0; j < c; ++j)
+        {
+            cout << sum[i][j] << "  ";
+            if(j == c - 1)
+                cout << endl;
+        }
+}
+     
+void MUL(){
+	 int a[10][10], b[10][10], mult[10][10], r1, c1, r2, c2, i, j, k;
+    cout << "Enter rows and columns for first matrix: ";
+    cin >> r1 >> c1;
+    cout << "Enter rows and columns for second matrix: ";
+    cin >> r2 >> c2;
+    // If column of first matrix in not equal to row of second matrix,
+    // ask the user to enter the size of matrix again.
+    while (c1!=r2)
+    {
+        cout << "Error! column of first matrix not equal to row of second.";
+        cout << "Enter rows and columns for first matrix: ";
+        cin >> r1 >> c1;
+        cout << "Enter rows and columns for second matrix: ";
+        cin >> r2 >> c2;
+    }
+    // Storing elements of first matrix.
+    cout << endl << "Enter elements of matrix 1:" << endl;
+    for(i = 0; i < r1; ++i)
+        for(j = 0; j < c1; ++j)
+        {
+            cout << "Enter element A[" << i + 1 <<"]["<< j + 1 << "] : ";
+            cin >> a[i][j];
+        }
+    // Storing elements of second matrix.
+    cout << endl << "Enter elements of matrix 2:" << endl;
+    for(i = 0; i < r2; ++i)
+        for(j = 0; j < c2; ++j)
+        {
+            cout << "Enter element B" << i + 1<<"][" << j + 1 << "] : ";
+            cin >> b[i][j];
+        }
+    // Initializing elements of matrix mult to 0.
+    for(i = 0; i < r1; ++i)
+        for(j = 0; j < c2; ++j)
+        {
+            mult[i][j]=0;
+        }
+    // Multiplying matrix a and b and storing in array mult.
+    for(i = 0; i < r1; ++i)
+        for(j = 0; j < c2; ++j)
+            for(k = 0; k < c1; ++k)
+            {
+                mult[i][j] += a[i][k] * b[k][j];
+            }
+    // Displaying the multiplication of two matrix.
+    cout << endl << "Output Matrix: " << endl;
+    for(i = 0; i < r1; ++i)
+    for(j = 0; j < c2; ++j)
+    {
+        cout << " " << mult[i][j];
+        if(j == c2-1)
+            cout << endl;
+    }
+}     
+
+void det(){
+}
+
+int main()
+{	
+	
+cout<<"                                                                               . (./(,#,(/.( .                       "<<endl; 
+cout<<"                                                                           /.#(,               ,(#./                 "<<endl;     
+cout<<"                                                                       ..#,     ,( ,  .* * //* .,   ,#..             "<<endl; 
+cout<< "Linear Algebra Matrix Calculator in C++                             *,/  ,  *%  ..#   (/ ...* #  * *  /,/           "<<endl; 
+cout<<"                                                                   #(   ,,   /    ..,,,,,,,..     (  ***  (#         "<<endl; 
+cout<<"                                                                 /(    *. .      ,..,,,,,,,.......  / .  %  #/       "<<endl; 
+cout<<"                                                                #  *(%(/        ,,..,,,,,............  #,*    #      "<<endl; 
+cout<<"                                                              /( * . *  ,.     .,...,,,................   .%,, (/    "<<endl; 
+cout<<"                                                             /,   .#. ,,.      .,...,,...............     .. */ ,/   "<<endl; 
+cout<<"                                                            #(  *(#  ,,,.       .,.,.............              / (#  "<<endl; 
+cout<<"                                                           *( /(,, .,,,,.          .........                .%. / (* "<<endl; 
+cout<<"                                                           *.      ,,,,..        .........                      /.., "<<endl; 
+cout<<"	American University of Science and Technology     /  */  ....,, #,,. .  ##.. ##,,  ####, ##########    , .( / "<<endl; 
+cout<<"		Faculty of Arts and Science               ./      .,,...##.,,,,.##,,.##,.,#.   #     ##           /."<<endl; 
+cout<<"		Department of Mathematics                 (,     .,,,,,# #(....,##,..##*. (##/.      ##            *("<<endl; 
+cout<<"                                                          #,     .,,,,#,,(#(,. ,##,..##...  /###     ##            ,#"<<endl; 
+cout<<"                                                          /*.//.  ,,##    ##(...##,..##. ,#    #*    ##        .  */"<<endl; 
+cout<<"                                                           (      ,##*.../ ##/..,*###*.. .*####     ####       ., ( "<<endl; 
+cout<<"                                                           ,       ,,.,.. ..... ..   ......                        , "<<endl; 
+cout<<"                                                           ,* ,  . .,,,,...           ...   ...              .,(. *, "<<endl; 
+cout<<"                                                           .(,  .%  .,......      .    .               ...  ,*,  ,(. "<<endl; 
+cout<<"                                                            ,# . .   ........      ...       ............   #  , #,  "<<endl; 
+cout<<"                                                              #. ,* ,  ..... .,..    ..................   * .( .#    "<<endl; 
+cout<<"                                                               #/ ,%,,   ..  ,..        ..............  .  ,* /#     "<<endl;
+cout<<"                                                                .#.*. #..   ..,.  .       .........   ,,% %..#.      "<<endl; 
+cout<<"                                                                  (( ./,/ /                ...     . *,*,. ((        "<<endl; 
+cout<<"                                                                    (/, ,,#**,,.              .,# # / . ,/(          "<<endl; 
+cout<<"                                                                      *.(   #  #,   *, .**,, #   # /  /.*            "<<endl; 
+cout<<"                                                                          #/(. .,  %#,   , #,.   .(/#                "<<endl; 
+cout<<"                                                                              .*.#/(/**,**/((#.*.                    "<<endl; 
+
+
+	
+
+	
+
+	
+  int input;
+    	cout<<"\n ~~~~~~~~~~~~~~~~~~~~~  Select 1 to 6 to preform the following operations  ~~~~~~~~~~~~~~~~~~~\n\n"<<endl;
+  cout<<"1.Solve a system of (n) linear equations in (m) variables using Gaussian elimination method.\n";
+  cout<<"2.Calculate the addition of 2 matrices.\n";
+  cout<<"3.Calculate the subtraction of 2 matrices. \n";
+  cout<<"4.Calculate the multiplication of 2 matrices.\n";
+  cout<<"5.Calculate the determinant of a matrix\n";
+  cout<<"6.Calculate the Inverse of a matrix  \n";
+  cout<<"7.Solve a system of (n)linear equations in (n) variables by multiplying the inverse of the coeficient matrix by the constant column (B) \n";
+  cout<<"8.Exit \n";
+  cout<<"Selection: ";
+  cin>> input;
+  cout<<"\n\n"<<endl;
+
+ while(input != '*')
+ {
+ 
+  switch ( input ) {
+  case 1: {           // Gause Elimination
+   int i,j,k,n; // declare variables and matrixes as
+   int input;
+   float a[10][10],b,x[10];
+   printf("\nEnter the size of matrix: ");
+   scanf("%d",&n);
+   printf("\nEnter the elements of augmented matrix: \n");
+   for(i=1; i<=n; i++) {
+      for(j=1; j<=(n+1); j++) {
+         cout << "A[" << i << ", " << j << " ]=";
+         cin >> a[i][j];
+      }
+   }
+   //to find the elements of diagonal matrix
+   for(j=1; j<=n; j++) {
+      for(i=1; i<=n; i++) {
+         if(i!=j) {
+            b=a[i][j]/a[j][j];
+            for(k=1; k<=n+1; k++) { 
+               a[i][k]=a[i][k]-b*a[j][k];
+            }
+         }
+      }
+   }
+
+   cout<<"\nThe solution is:\n";
+   for(i=1; i<=n; i++) {
+      x[i]=a[i][n+1]/a[i][i];
+      cout<<"	x"<<i << "= "<<x[i]<<" ";
+   }
+}
+    break;
+  case 2:            // Addition
+    ADD();
+    break;
+  case 3:            // Subtraction
+    SUB();
+    break;
+  case 4: 
+  	MUL();           // Multiplication
+    break;
+  case 5: 
+  	det(); 
+	         int n, i, j;
+   int matrix[10][10];   
+   cout << "Enter the size of the matrix:\n";
+   cin >> n;
+   cout << "Enter the elements of the matrix:\n";
+   for (i = 0; i < n; i++)
+      for (j = 0; j < n; j++)
+         cin >> matrix[i][j];
+   cout<<"The entered matrix is:"<<endl;
+   for (i = 0; i < n; i++) {  
+      for (j = 0; j < n; j++)
+         cout << matrix[i][j] <<" ";
+         cout<<endl;
+   }
+   cout<<"Determinant of the matrix is "<< determinant(matrix, n)<<endl;      // Note the colon, not a semicolon
+   
+    break;
+  case 6: 
+    {
+	int i = 0, j = 0, k = 0, n = 0;
+    float **mat = NULL;
+    float d = 0.0;
+    
+    cout << "How many variables? ";
+    cin >> n;
+    cout << endl;
+    
+    // Allocating memory for matrix array
+    mat = new float*[2*n];
+    for (i = 0; i < 2*n; ++i)
+    {
+        mat[i] = new float[2*n]();
+    }
+    
+    cout << "Please enter the coefficients:" << endl;
+    //Inputs the coefficients of the matrix
+    for(i = 0; i < n; ++i)
+    {
+        for(j = 0; j < n; ++j)
+        {
+            cin >> mat[i][j];
+        }
+    }
+    
+    cout << endl << "Input matrix:" << endl;
+    for (i = 0; i < n; ++i)
+    {
+        for (j = 0; j < n; ++j)
+        {
+            cout << mat[i][j] << "\t";
+        }
+        cout << endl;
+    }
+    cout << endl;
+    
+    // Initializing Right-hand side to identity matrix
+    for(i = 0; i < n; ++i)
+    {
+        for(j = 0; j < 2*n; ++j)
+        {
+            if(j == (i+n))
+            {
+                mat[i][j] = 1;
+            }
+        }
+    }
+    
+    // Partial pivoting
+    for(i = n; i > 1; --i)
+    {
+        if(mat[i-1][1] < mat[i][1])
+        {
+            for(j = 0; j < 2*n; ++j)
+            {
+                d = mat[i][j];
+                mat[i][j] = mat[i-1][j];
+                mat[i-1][j] = d;
+            }
+        }
+    }
+    cout << endl;
+    
+    // Pivoted output
+    cout << "Pivoted output: " << endl;
+    for(i = 0; i < n; ++i)
+    {
+        for(j = 0; j < 2*n; ++j)
+        {
+            cout << mat[i][j] << "\t";
+        }
+        cout << endl;
+    }
+    cout << endl;
+    
+    // Reducing To Diagonal Matrix
+    for(i = 0; i < n; ++i)
+    {
+        for(j = 0; j < 2*n; ++j)
+        {
+            if(j != i)
+            {
+                d = mat[j][i] / mat[i][i];
+                for(k = 0; k < n*2; ++k)
+                {
+                    mat[j][k] -= mat[i][k]*d;
+                }
+            }
+        }
+    }
+    cout << endl;
+    
+    // Reducing To Unit Matrix
+    for(i = 0; i < n; ++i)
+    {
+        d = mat[i][i];
+        for(j = 0; j < 2*n; ++j)
+        {
+            mat[i][j] = mat[i][j]/d;
+        }
+    }
+    
+    // Print inverse of the input matrix
+    cout<<"Inverse matrix:" << endl;
+    for(i=0; i < n; ++i)
+    {
+        for(j = n; j < 2*n; ++j)
+        {
+            cout << mat[i][j] << "\t";
+        }
+        cout << endl;
+    }
+    
+    // Deleting the memory allocated
+    for (i = 0; i < n; ++i)
+    {
+        delete[] mat[i];
+    }
+    delete[] mat;
+}
+    break;
+  case 7: //  cramers rule 
+  	 GaussElimination g1;
+
+    g1.setRowCol();
+    g1.setMatA();
+    g1.setMatB();
+    g1.solve();
+    getch();
+  	
+  	
+	break;	
+  case 8:  
+    cout<<"Program preformed by: \n -Anis Kobrosly\n -Dusanthan Sivarajah"<<endl;
+  system("pause");
+  	return 0;   		           // end program 
+    break;
+  default:            // default
+    cout<<"Error, bad input, quitting\n";
+    break;
+  }
+ 
+ 	cout<<"\n ~~~~~~~~~~~~~~~~~~~~~  Select 1 to 6 to preform the following operations  ~~~~~~~~~~~~~~~~~~~\n\n"<<endl;
+  cout<<"1.Calculate a system of (n) linear equations in (m) variables using Gaussian elimination method.\n";
+  cout<<"2.Calculate the addition of 2 matrices.\n";
+  cout<<"3.Calculate the subtraction of 2 matrices. \n";
+  cout<<"4.Calculate the multiplication of 2 matrices.\n";
+  cout<<"5.Calculate the determinant of a matrix\n";
+  cout<<"6.Calculate the Inverse of a matrix  \n";
+  cout<<"7.Calculate a matrix using Cramer's Rule \n";
+  cout<<"8.Exit \n";
+  cout<<"Selection: ";
+  cin>> input;
+  cout<<"\n\n"<<endl;
+}
+  system("pause");
+  return 0;
+
+
+}
